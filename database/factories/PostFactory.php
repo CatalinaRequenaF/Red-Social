@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use \Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
@@ -16,9 +18,12 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
+        $name= $this-> faker->unique()->sentence();
         return [
-            'title' => fake()->sentence(),
-            'body' => fake()->text()
+            'title' => $name,
+            'slug'=>Str::slug($name),
+            'body' => fake()->text(),
+            'user_id' => User::all()->random(),
         ];
     }
 }

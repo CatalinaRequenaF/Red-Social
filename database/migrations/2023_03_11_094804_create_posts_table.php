@@ -16,9 +16,12 @@ return new class extends Migration
             $table->timestamps();
 
             $table->string('title');
+            $table->string('slug')->unique()->after('title');
             $table->text('body');
             //FK
+            
             $table->foreignId('user_id');
+            $table->foreignId('community_id');
 
 
         });
