@@ -11,7 +11,9 @@ class StorePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if($this->user_id==auth()->user()->id){
+            return true;
+        }
     }
 
     /**

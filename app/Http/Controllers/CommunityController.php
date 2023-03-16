@@ -8,13 +8,6 @@ use Illuminate\Http\Request;
 
 class CommunityController extends Controller
 {
-
-    //Costum uri
-    public function getRouteKey(): mixed
-    {
-        return 'title';
-    }
-
     /**
      * Display a listing of the resource.
      */

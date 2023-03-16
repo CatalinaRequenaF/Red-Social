@@ -59,6 +59,8 @@ Route::middleware('auth:sanctum')->group(function(){
     //
 });
     */
-
+    Route::apiResource('comment', CommentController::class)->except([
+        'index', 'show'
+    ])->names('api.comment');
 
 //Grupo que no requiere autorizacion

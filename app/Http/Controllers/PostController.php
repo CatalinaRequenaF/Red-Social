@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Community;
 use App\Models\Post;
 use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Http\Request;
@@ -35,10 +36,11 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
-    {
-        $comments= $post->comment;
-        return view('posts.show', compact('post', 'comments'));
+    public function show(Community $community, Post $post)
+    {   
+        $comments= $post->comments->sortBy('created_at')->reverse();
+
+        return view('posts.show', compact('post', 'community','comments'));
     }
 
     /**

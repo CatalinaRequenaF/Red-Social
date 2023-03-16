@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
+
 
 
 /*
@@ -25,10 +27,16 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-//Mis rutas (Sin protección)
-Route::get('/posts', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('create.post');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+//Comentarios
+Route::post('/comment/store', [CommentController::class, 'store'])->name('comment.store');
+});
+
+require __DIR__.'/auth.php';
 
 
 /*
@@ -44,24 +52,19 @@ Route::get('/users/{user}/posts/{post:slug}', function (User $user, Post $post) 
 //Vistas
 Route::controller(CommunityController::class)->group(function(){
     Route::get('/communities', 'index')->name('community.index');
-    Route::get('/{community}', 'show')->name('community.show');
+    Route::get('/{community:title}', 'show')->name('community.show');
     Route::get('/community/create', 'create')->name('community.create');
     Route::post('/community/store', 'store')->name('community.store');
 });
 
-//Posts
-Route::prefix('{community}')->group(function () {
-    Route::controller(PostController::class)->group(function(){
-        Route::get('/users', function () {
-            Route::get('/{post}', 'show')->name('post.show');
-            Route::get('/create-post', 'create')->name('post.create');
-            Route::post('/post/store', 'store')->name('post.store');
-        });
-    });
 
+//Posts
+Route::controller(PostController::class)->group(function(){
+    Route::get('{community:title}/{post:slug?}','show')->name('post.show');
+  /*Route::get('/create-post', 'create')->name('post.create');
+    Route::post('/post/store', 'store')->name('post.store');*/
 });
 
-//Comentarios
 
 
 
