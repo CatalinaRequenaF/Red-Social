@@ -1,3 +1,5 @@
+<x-bootstrap-component></x-bootstrap-component>
+
 <form method="POST" action="store">
     @csrf
     <label for="title">Título de la comunidad</label>

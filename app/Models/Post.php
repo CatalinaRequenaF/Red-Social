@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Post extends Model
 {
@@ -12,11 +13,10 @@ class Post extends Model
     protected $fillable = [
         'title',
         'body',
-        'user_id',
-        'community_id'
+        'user_id'
     ];
 
-    //Relaciones
+    //PERTENECE A USUARIO Y COMUNIDAD
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -27,8 +27,16 @@ class Post extends Model
         return $this->belongsTo(Community::class);
     }
 
+    //Puede
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->morphToMany(Comment::class, 'commentable');
     }
+
+    public function likes(): MorphToMany
+    {
+        return $this->morphToMany(Like::class, 'likeable');
+    }
+
+    
 }

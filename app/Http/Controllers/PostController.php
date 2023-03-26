@@ -20,9 +20,9 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Community $community)
     {
-        //
+        return view('posts.create', compact('community'));
     }
 
     /**
@@ -38,7 +38,7 @@ class PostController extends Controller
      */
     public function show(Community $community, Post $post)
     {   
-        $comments= $post->comments->sortBy('created_at')->reverse();
+        $comments= $post->comments->sortBy('created_at')->reverse();   
 
         return view('posts.show', compact('post', 'community','comments'));
     }

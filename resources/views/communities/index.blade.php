@@ -1,5 +1,5 @@
-
-<div>
+<x-app-layout>
+  <div>
     @foreach ($communities as $community)
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
         <div class="col">
@@ -17,7 +17,9 @@
             </div>
           </div>
         </div>
-        <br> <br>
+        <br>     
+    </div>
     @endforeach
-
 </div>
+
+</x-app-layout>

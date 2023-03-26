@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-
-            $table->text('body');
-
-            $table->foreignId('user_id');           
+        Schema::create('followables', function (Blueprint $table) {
+            $table->id();       
+            $table->foreignId('follow_id');
+            $table->foreignId('followable_id');
+            $table->string('followable_type');
         });
+
     }
 
     /**
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('followables');
     }
 };

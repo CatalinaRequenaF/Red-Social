@@ -1,12 +1,9 @@
 <?php
-
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -19,70 +16,65 @@ use App\Http\Controllers\CommentController;
 |
 */
 
+//Inicio
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
+})->name('home');
+
+//Comunidades
+Route::controller(CommunityController::class)->group(function(){
+    Route::get('/communities', 'index')->name('communities.index');
+    Route::get('/communities/{community:title}', 'show')->name('community.show');
 });
 
+//Posts
+Route::controller(PostController::class)->group(function(){
+    Route::get('/communities/{community:title}/{post:slug?}','show')->name('post.show');
+
+});
+
+//Comentarios
+Route::controller(CommentController::class)->group(function (){
+    Route::get('/communities/{community}/posts/{post}/comments/', 'index')->name('comment.index');
+    Route::get('/communities/{community}/posts/{post}/comments/{comment}', 'show')->name('comment.show');
+    Route::post('/communities/{community}/posts/{post}/comment/store', 'store')->name('comment.store');
+    Route::post('/communities/{community}/posts/{post}/comment/update', 'update')->name('comment.update');
+    Route::post('/communities/{community}/posts/{post}/comments/{comment}', 'delete')->name('comment.delete');
+});
+
+//----------------------------------AUTORIZADAS----------------------------------------------
+//Perfil
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+//Dashboard
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-//Comentarios
-Route::post('/comment/store', [CommentController::class, 'store'])->name('comment.store');
-});
 
-require __DIR__.'/auth.php';
-
-
-/*
-
-Route::get('/posts/{post}/comments/{comment}', function (string $postId, string $commentId) {
-    // ...
-});
-Route::get('/users/{user}/posts/{post:slug}', function (User $user, Post $post) {
-    return $post;
-});*/
-
-//Comunidades
-//Vistas
+//Comunidad
 Route::controller(CommunityController::class)->group(function(){
-    Route::get('/communities', 'index')->name('community.index');
-    Route::get('/{community:title}', 'show')->name('community.show');
-    Route::get('/community/create', 'create')->name('community.create');
-    Route::post('/community/store', 'store')->name('community.store');
-});
+    Route::get('/community/create', [CommunityController::class, 'create'])->name('community.create');
+    Route::post('/community/store',  [CommunityController::class, 'store'])->name('community.store');
+    Route::post('/community/update', [CommunityController::class, 'update'])->name('community.update');
+})->middleware('auth');
 
+//Post 
 
-//Posts
 Route::controller(PostController::class)->group(function(){
-    Route::get('{community:title}/{post:slug?}','show')->name('post.show');
-  /*Route::get('/create-post', 'create')->name('post.create');
-    Route::post('/post/store', 'store')->name('post.store');*/
+    Route::get('post/create', 'create')->name('post.create');
+    Route::post('communities/{community:title}/post/store', 'store')->name('post.store');
+    Route::post('communities/{community:title}/post/update', 'update')->name('post.update');
+    Route::post('communities/{community:title}/post/delete', 'delete')->name('post.delete');    
 });
 
 
-
-
-
-//Admin routes
-
-//-------------------
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    //Community-auth
-   
-});
-
-
+//Timeline
+Route::view('/timeline', 'timeline')->name('timeline');
 
 
 require __DIR__.'/auth.php';

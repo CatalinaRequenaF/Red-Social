@@ -13,7 +13,7 @@ class CommunityController extends Controller
      */
     public function index()
     {
-        $communities = Community::orderBy('created_at', 'desc')->get();
+        $communities = Community::orderBy('created_at', 'desc')->get()->paginate(10);
         //$posts = Post::get();
         return (view('communities.index', ['communities' => $communities]));//,['posts'=>$posts]));
     }

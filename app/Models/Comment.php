@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Comment extends Model
 {
@@ -12,7 +13,8 @@ class Comment extends Model
     protected $fillable = [
         'body',
         'post_id',
-        'user_id'
+        'user_id',
+        'comment_id'
     ]; 
 
     public function user()
@@ -20,8 +22,27 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function post()
+    
+
+    //Tiene likes y comentarios (los llamaremos replies)
+    public function likes(): MorphToMany
     {
-        return $this->belongsTo(Post::class);
+        return $this->morphToMany(Like::class, 'likeable');
+    }
+
+    public function replies(): MorphToMany
+    {
+        return $this->morphToMany(Comment::class, 'commentable');
+    }
+
+    //Pertenece a posts y a comentarios
+    public function posts(): MorphToMany
+    {
+        return $this->morphedByMany(Post::class, 'commentable');
+    }
+
+    public function comments(): MorphToMany
+    {
+        return $this->morphedByMany(Comment::class, 'commentable');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -19,6 +20,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
     ];
@@ -41,7 +43,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    
+    //Tiene N posts, comunidades y comentarios------------
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -55,5 +58,22 @@ class User extends Authenticatable
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    //Sigue X, le gusta X ------------
+    public function follow()
+    {
+        return $this->hasMany(Follow::class, 'follow_id');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'likeable');
+    }
+
+    //Ver los seguidores-------------------
+    public function follows(): MorphToMany
+    {
+        return $this->morphToMany(Follow::class, 'followable');
     }
 }
